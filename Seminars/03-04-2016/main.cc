@@ -16,7 +16,7 @@ public:
     }
 
     void push(const T &obj) {
-        std::unique_lock<std::mutex> lock(mutex, std::defer_lock_t());
+        std::unique_lock<std::mutex> lock(mutex);
         intern.push(obj);
         lock.unlock();
         cv.notify_one();
