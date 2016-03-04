@@ -24,15 +24,8 @@ public:
 
     std::unique_ptr<T> wait_pop() {
         std::unique_lock<std::mutex> lock(mutex, std::defer_lock_t());
-
-        if (intern.size() > 0) {
-            return exclusive_pop();
-        } else {
-            cv.wait(lock, [&]() {
-                return intern.size() > 0;
-            });
-            return exclusive_pop();
-        }
+        cv.wait(lock, [this]{ return intern.size() > 0; });
+        return exclusive_pop();
     }
 
 
