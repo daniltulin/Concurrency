@@ -1,5 +1,5 @@
 all:
-	g++ test.cc -std=c++14 -o test 
+	g++ test.cc -std=c++14 -o BlockingQueueTest 
 
 clean:
-	rm test 
+	rm BlockingQueueTest
