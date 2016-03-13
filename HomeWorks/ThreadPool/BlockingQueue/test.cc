@@ -1,7 +1,9 @@
 #include <iostream>
-#include <boost/test/unit_test.hpp>
 #include "thread_safe_queue.hpp"
 
-int main() {
-    return 0;
+#define BOOST_TEST_MODULE Blocking Queue tests
+#include <boost/test/included/unit_test.hpp>
+
+BOOST_AUTO_TEST_CASE(free_test_function) {
+      BOOST_TEST(true);
 }
