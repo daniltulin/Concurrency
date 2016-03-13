@@ -2,6 +2,7 @@
 #include <forward_list>
 #include <condition_variable>
 #include <mutex>
+#include <atomic>
 
 template <typename T>
 class thread_safe_queue {
@@ -21,7 +22,9 @@ private:
     std::forward_list<T> internal; 
     size_t capacity;
 
-    size_t size;
+    std::atomic_bool should_shutdown;
+
+    std::atomic_uint size;
 
     std::condition_variable enq_cv, pop_cv;
     std::mutex front_mutex, back_mutex;
