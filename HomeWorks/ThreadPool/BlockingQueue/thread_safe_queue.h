@@ -1,5 +1,5 @@
 #include <iostream>
-#include <forward_list>
+#include <deque>
 #include <condition_variable>
 #include <mutex>
 #include <atomic>
@@ -19,7 +19,7 @@ public:
 
 private:
 
-    std::forward_list<T> internal; 
+    std::deque<T> internal; 
     size_t capacity;
 
     std::atomic_bool should_shutdown;
