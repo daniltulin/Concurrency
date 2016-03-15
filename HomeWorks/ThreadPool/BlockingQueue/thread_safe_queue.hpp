@@ -42,6 +42,11 @@ bool thread_safe_queue<T>::pop(T& item) {
 }
 
 template <typename T>
+size_t thread_safe_queue<T>::get_capacity() const {
+    return capacity;
+}
+ 
+template <typename T>
 void thread_safe_queue<T>::shutdown() {
     should_shutdown.store(true);
     pop_cv.notify_all();

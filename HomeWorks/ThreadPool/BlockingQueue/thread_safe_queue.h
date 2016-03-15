@@ -17,6 +17,8 @@ public:
 
     void shutdown();
 
+    size_t get_capacity() const;
+
 private:
 
     std::deque<T> internal; 
