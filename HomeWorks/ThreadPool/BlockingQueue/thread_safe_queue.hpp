@@ -28,7 +28,7 @@ bool thread_safe_queue<T>::pop(T& item) {
 
     pop_cv.wait(locker, [this](){return size > 0 || should_shutdown == false;});
 
-    if (should_shutdown)
+    if (should_shutdown && size == 0)
         return false;
 
     item = internal.back();
