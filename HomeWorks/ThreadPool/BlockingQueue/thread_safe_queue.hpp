@@ -34,7 +34,7 @@ bool thread_safe_queue<T>::pop(T& item) {
     item = internal.back();
     internal.pop_back();
 
-    if (size == capacity - 1)
+    if (size() == capacity - 1)
         enq_cv.notify_one();
 
     return true;
@@ -53,6 +53,6 @@ void thread_safe_queue<T>::shutdown() {
 }
 
 template <typename T>
-size_t size() const {
+size_t thread_safe_queue<T>::size() const {
     return internal.size();
 }
