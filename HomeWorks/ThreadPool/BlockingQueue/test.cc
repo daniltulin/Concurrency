@@ -1,8 +1,9 @@
 #include <iostream>
-#include <deque>
+#include <future>
+
 #include "thread_safe_queue.hpp"
 
-#define BOOST_TEST_MODULE Blocking Queue tests
+#define BOOST_TEST_MODULE safe thread queue tests
 #include <boost/test/included/unit_test.hpp>
 
 class baseline_fixture {
@@ -50,3 +51,36 @@ BOOST_AUTO_TEST_CASE(one_thread_deque_test) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+size_t summing(thread_safe_queue<int>& queue) {
+    size_t sum = 0;
+    int popped = 0;
+    bool working = true;
+    while(working) {
+        working = queue.pop(popped);
+        sum += popped;
+    }
+    return sum;
+}
+
+BOOST_AUTO_TEST_CASE(summing_test) {
+    size_t workers_qty = 4;
+    std::vector<std::shared_future<size_t>> futures(workers_qty);
+    thread_safe_queue<int> queue(100 * workers_qty);
+    for (size_t i = 0; i < workers_qty; ++i) {
+        futures.push_back(std::async(std::launch::async, summing, queue).shared());
+    }
+
+    size_t sum = 0;
+    for (size_t i = 0; i < 1000 * workers_qty; ++i) {
+        sum += i;
+        queue.enqueue(i);
+    }
+    queue.shutdown();
+
+    size_t futures_sum = 0;
+    for (size_t i = 0; i < workers_qty; ++i) {
+        futures_sum += futures[i].get();
+    }
+    BOOST_TEST(futures_sum == sum);
+}
