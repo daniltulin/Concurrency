@@ -29,6 +29,6 @@ private:
     std::atomic_bool should_shutdown;
 
     std::condition_variable enq_cv, pop_cv;
-    std::mutex front_mutex, back_mutex;
+    std::mutex mutex;
 
 };
