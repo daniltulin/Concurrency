@@ -56,35 +56,53 @@ BOOST_AUTO_TEST_CASE(one_thread_deque_test) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
-size_t summing(thread_safe_queue<int>& queue) {
-    size_t sum = 0;
-    int popped = 0;
-    bool working = true;
-    while(queue.pop(popped)) {
-        sum += popped;
+class summing_fixture {
+public:
+
+    size_t workers_qty;
+    thread_safe_queue<int> queue;
+    size_t sum;
+
+    summing_fixture(): workers_qty(4), 
+                       queue(1000),
+                       sum(0) {
     }
-    return sum;
-}
+
+    static size_t summing(thread_safe_queue<int>& queue) {
+        size_t sum = 0;
+        int popped = 0;
+        bool working = true;
+        while(queue.pop(popped)) {
+            sum += popped;
+        }
+        return sum;
+    }
+
+    void push(size_t qty) {
+        for (size_t i = 0; i < qty; ++i) {
+            sum += i;
+            queue.enqueue(i);
+        }
+    }
+
+};
+
+BOOST_FIXTURE_TEST_SUITE(advanced_tests, summing_fixture)
 
 BOOST_AUTO_TEST_CASE(summing_test, *utf::timeout(5)) {
-    size_t workers_qty = 4;
     std::vector<std::future<size_t>> futures(workers_qty);
-    size_t elements_qty = 5000;
-    thread_safe_queue<int> queue(elements_qty * workers_qty);
-    size_t sum = 0;
+
+    push(queue.get_capacity());
 
     BOOST_TEST_CHECKPOINT("is going to launch threads");
-    auto task = std::bind(summing, std::ref(queue));
     for (auto it = futures.begin(); it != futures.end(); ++it) {
+        auto task = std::bind(summing_fixture::summing, std::ref(queue));
         auto future = std::async(std::launch::async, task);
         *it = std::move(future);
     }
     BOOST_TEST_CHECKPOINT("threads are launched");
 
-    for (size_t i = 0; i < 10 * elements_qty * workers_qty; ++i) {
-        sum += i;
-        queue.enqueue(i);
-    }
+    push(50000);
 
     queue.shutdown();
     BOOST_TEST_CHECKPOINT("queue is shutdown");
@@ -96,3 +114,5 @@ BOOST_AUTO_TEST_CASE(summing_test, *utf::timeout(5)) {
     }
     BOOST_TEST(futures_sum == sum);
 }
+
+BOOST_AUTO_TEST_SUITE_END()
