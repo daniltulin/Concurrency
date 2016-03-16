@@ -9,14 +9,13 @@ template <typename T>
 bool thread_safe_queue<T>::enqueue(const T& item) {
     std::unique_lock<std::mutex> locker(front_mutex);
 
-    enq_cv.wait(locker, [this](){return size <= capacity || should_shutdown == false;});
+    enq_cv.wait(locker, [this](){return internal.size() < capacity || should_shutdown == true;});
 
     if (should_shutdown)
         return false;
 
     internal.push_front(item);
-    size.store(size + 1);
-    if (size == 1)
+    if (internal.size() == 1)
         pop_cv.notify_one();
 
     return true;
@@ -26,16 +25,15 @@ template <typename T>
 bool thread_safe_queue<T>::pop(T& item) {
     std::unique_lock<std::mutex> locker(back_mutex);
 
-    pop_cv.wait(locker, [this](){return size > 0 || should_shutdown == false;});
+    pop_cv.wait(locker, [this](){return internal.size() > 0 || should_shutdown == true;});
 
-    if (should_shutdown && size == 0)
+    if (should_shutdown && internal.size() == 0)
         return false;
 
     item = internal.back();
     internal.pop_back();
 
-    size.store(size - 1);
-    if (size == capacity - 1)
+    if (internal.size() == capacity - 1)
         enq_cv.notify_one();
 
     return true;
