@@ -34,6 +34,7 @@ BOOST_AUTO_TEST_CASE(baseline_test) {
     queue.enqueue(value);
     queue.shutdown();
     BOOST_TEST(queue.enqueue(value) == false);
+    BOOST_TEST(queue.pop(popped) == true);
     BOOST_TEST(queue.pop(popped) == false);
 }
 
