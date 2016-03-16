@@ -35,6 +35,7 @@ BOOST_AUTO_TEST_CASE(baseline_test) {
     queue.shutdown();
     BOOST_TEST(queue.enqueue(value) == false);
     BOOST_TEST(queue.pop(popped) == true);
+    BOOST_TEST(popped == value);
     BOOST_TEST(queue.pop(popped) == false);
 }
 
@@ -57,8 +58,7 @@ size_t summing(thread_safe_queue<int>& queue) {
     size_t sum = 0;
     int popped = 0;
     bool working = true;
-    while(working) {
-        working = queue.pop(popped);
+    while(queue.pop(popped)) {
         sum += popped;
     }
     return sum;
@@ -67,21 +67,22 @@ size_t summing(thread_safe_queue<int>& queue) {
 BOOST_AUTO_TEST_CASE(summing_test) {
     size_t workers_qty = 4;
     std::vector<std::shared_future<size_t>> futures(workers_qty);
-    thread_safe_queue<int> queue(100 * workers_qty);
-    for (size_t i = 0; i < workers_qty; ++i) {
-        futures.push_back(std::async(std::launch::async, summing, queue).shared());
-    }
-
+    size_t elements_qty = 200;
+    thread_safe_queue<int> queue(elements_qty * workers_qty);
     size_t sum = 0;
-    for (size_t i = 0; i < 1000 * workers_qty; ++i) {
+
+    auto future = std::async(std::launch::async, summing, std::ref(queue));
+
+    for (size_t i = 0; i < 10 * elements_qty * workers_qty; ++i) {
         sum += i;
         queue.enqueue(i);
     }
     queue.shutdown();
+    BOOST_TEST(queue.enqueue(5) == false);
 
     size_t futures_sum = 0;
-    for (size_t i = 0; i < workers_qty; ++i) {
-        futures_sum += futures[i].get();
-    }
+//    for (size_t i = 0; i < workers_qty; ++i) {
+        futures_sum += future.get();
+//    }
     BOOST_TEST(futures_sum == sum);
 }

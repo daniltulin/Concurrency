@@ -10,7 +10,8 @@ template <typename T>
 bool thread_safe_queue<T>::enqueue(const T& item) {
     std::unique_lock<std::mutex> locker(mutex);
 
-    enq_cv.wait(locker, [this](){return size() < capacity || should_shutdown == true;});
+    enq_cv.wait(locker, [this](){return size() < capacity 
+                                 || should_shutdown == true;});
 
     if (should_shutdown)
         return false;
@@ -26,7 +27,8 @@ template <typename T>
 bool thread_safe_queue<T>::pop(T& item) {
     std::unique_lock<std::mutex> locker(mutex);
 
-    pop_cv.wait(locker, [this](){return size() > 0 || should_shutdown == true;});
+    pop_cv.wait(locker, [this](){return size() > 0 
+                                 || should_shutdown == true;});
 
     if (should_shutdown && size() == 0)
         return false;
