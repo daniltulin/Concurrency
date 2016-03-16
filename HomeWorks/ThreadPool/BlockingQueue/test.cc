@@ -95,8 +95,8 @@ BOOST_AUTO_TEST_CASE(summing_test, *utf::timeout(5)) {
     push(queue.get_capacity());
 
     BOOST_TEST_CHECKPOINT("is going to launch threads");
+    auto task = std::bind(summing_fixture::summing, std::ref(queue));
     for (auto it = futures.begin(); it != futures.end(); ++it) {
-        auto task = std::bind(summing_fixture::summing, std::ref(queue));
         auto future = std::async(std::launch::async, task);
         *it = std::move(future);
     }
