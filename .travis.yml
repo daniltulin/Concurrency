@@ -1,0 +1,9 @@
+language: cpp
+
+compiler:
+- gcc
+
+before_script:
+- cd HomeWorks/ThreadPool/BlockingQueue
+
+script: make test
