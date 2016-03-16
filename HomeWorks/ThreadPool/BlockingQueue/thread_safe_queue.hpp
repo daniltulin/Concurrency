@@ -1,4 +1,5 @@
 #include "thread_safe_queue.h"
+#include <cassert>
 
 template <typename T>
 thread_safe_queue<T>::thread_safe_queue(size_t c): capacity(c) {
@@ -7,15 +8,15 @@ thread_safe_queue<T>::thread_safe_queue(size_t c): capacity(c) {
 
 template <typename T>
 bool thread_safe_queue<T>::enqueue(const T& item) {
-    std::unique_lock<std::mutex> locker(front_mutex);
+    std::unique_lock<std::mutex> locker(mutex);
 
-    enq_cv.wait(locker, [this](){return internal.size() < capacity || should_shutdown == true;});
+    enq_cv.wait(locker, [this](){return size() < capacity || should_shutdown == true;});
 
     if (should_shutdown)
         return false;
 
     internal.push_front(item);
-    if (internal.size() == 1)
+    if (size() == 1)
         pop_cv.notify_one();
 
     return true;
@@ -23,17 +24,17 @@ bool thread_safe_queue<T>::enqueue(const T& item) {
 
 template <typename T>
 bool thread_safe_queue<T>::pop(T& item) {
-    std::unique_lock<std::mutex> locker(back_mutex);
+    std::unique_lock<std::mutex> locker(mutex);
 
-    pop_cv.wait(locker, [this](){return internal.size() > 0 || should_shutdown == true;});
+    pop_cv.wait(locker, [this](){return size() > 0 || should_shutdown == true;});
 
-    if (should_shutdown && internal.size() == 0)
+    if (should_shutdown && size() == 0)
         return false;
 
     item = internal.back();
     internal.pop_back();
 
-    if (internal.size() == capacity - 1)
+    if (size == capacity - 1)
         enq_cv.notify_one();
 
     return true;
@@ -49,4 +50,9 @@ void thread_safe_queue<T>::shutdown() {
     should_shutdown.store(true);
     pop_cv.notify_all();
     enq_cv.notify_all();
+}
+
+template <typename T>
+size_t size() const {
+    return internal.size();
 }
