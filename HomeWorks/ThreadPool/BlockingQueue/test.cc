@@ -66,6 +66,7 @@ public:
     summing_fixture(): workers_qty(4), 
                        queue(1000),
                        sum(0) {
+
     }
 
     static size_t summing(thread_safe_queue<int>& queue) {
