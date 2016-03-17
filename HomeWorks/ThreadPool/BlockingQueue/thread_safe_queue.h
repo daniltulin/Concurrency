@@ -15,9 +15,9 @@ public:
     bool enqueue(const T& item);
     bool pop(T& item);
 
-    void shutdown();
+    inline void shutdown();
 
-    size_t get_capacity() const;
+    inline size_t get_capacity() const;
 
 private:
 
