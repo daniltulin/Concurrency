@@ -1,4 +1,4 @@
-#include <thread_pool.h>
+#include "thread_pool.h"
 
 template<typename T>
 thread_pool<T>::thread_pool(): size(get_def_size()){
@@ -26,7 +26,7 @@ void thread_pool<T>::shutdown() {
 }
 
 template<typename T>
-size_t thread_pool<T>::get_default_size() {
+size_t thread_pool<T>::get_def_size() {
     size_t size = std::thread::hardware_concurrency();
-    return size != 0 : size ? 4;
+    return size != 0 ? size : 4;
 }
