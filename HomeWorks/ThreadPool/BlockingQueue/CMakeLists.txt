@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.5)
+project(BlockingQueue)
+add_executable(BlockingQueue test.cc)
+set_property(TARGET BlockingQueue PROPERTY CXX_STANDARD 11)
+include(CTest)
+add_test(BlockingQueue BlockingQueue)
