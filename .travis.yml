@@ -7,11 +7,7 @@ compiler:
 sudo: true
 
 before_install:
-- sudo apt-get install libboost-dev
+- sudo apt-get install libboost-dev g++ -y
 
 script:
-- mkdir _builds
-- cd _builds
-- cmake ..
-- make
-- ctest
+- ./scripts/build_and_test.sh
