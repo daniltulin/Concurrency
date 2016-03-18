@@ -2,16 +2,15 @@ language: cpp
 compiler:
 - clang
 - gcc
- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
 script:
 - g++ -v
 - ./scripts/build_and_test.sh
 
 addons:
-apt:
-sources:
-- ubuntu-toolchain-r-test
-packages:
-- gcc-4.8
-- g++-4.8
+    apt:
+        sources:
+        - ubuntu-toolchain-r-test
+    packages:
+        - gcc-4.9
+        - g++-4.9
