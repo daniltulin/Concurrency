@@ -9,7 +9,7 @@ os: osx
 
 before_install:
 - brew update
-- brew install boost --c++11
+- brew reinstall boost --c++11
 - export CPLUS_INCLUDE_PATH="/usr/local/include:${CPLUS_INCLUDE_PATH}"
 
 script:
