@@ -11,7 +11,7 @@ public:
 
     std::future<T> submit(const std::function<T>& task);
 
-    inline size_t size() const;
+    inline size_t getSize() const;
     inline void shutdown();
 
 private:

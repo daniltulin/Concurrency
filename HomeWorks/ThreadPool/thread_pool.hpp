@@ -16,7 +16,7 @@ std::future<T> thread_pool<T>::submit(const std::function<T>& task) {
 }
 
 template<typename T>
-size_t thread_pool<T>::size() const {
+size_t thread_pool<T>::getSize() const {
     return size;
 }
 
