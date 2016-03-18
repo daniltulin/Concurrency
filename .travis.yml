@@ -5,11 +5,12 @@ compiler:
 - gcc
 
 sudo: true
+dist: trusty
 
 before_install:
 - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
 - sudo apt-get update 
-- sudo apt-get install libboost-dev g++-4.9 -y
+- sudo apt-get install libboost-dev -y #g++-4.9 -y
 
 script:
 - ./scripts/build_and_test.sh
