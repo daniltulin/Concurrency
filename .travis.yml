@@ -1,16 +1,17 @@
-language:
-- cpp
-
+language: cpp
 compiler:
-- clang 
-
-sudo: true
-os: osx
-
-before_install:
-- brew update
-- brew reinstall boost --c++11
-- export CPLUS_INCLUDE_PATH="/usr/local/include:${CPLUS_INCLUDE_PATH}"
+- clang
+- gcc
+ if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
 script:
+- g++ -v
 - ./scripts/build_and_test.sh
+
+addons:
+apt:
+sources:
+- ubuntu-toolchain-r-test
+packages:
+- gcc-4.8
+- g++-4.8
