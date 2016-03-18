@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.5)
+cmake_minimum_required (VERSION 2.8)
 project (ThreadPool)
 add_executable(ThreadPool test.cc)
 set_property(TARGET ThreadPool PROPERTY CXX_STANDARD 14)
