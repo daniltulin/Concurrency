@@ -1,3 +1,5 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.5)
 project (ThreadPool)
 add_executable(ThreadPool test.cc)
+set_property(TARGET ThreadPool PROPERTY CXX_STANDARD 11)
+include_directories(BlockingQueue)
