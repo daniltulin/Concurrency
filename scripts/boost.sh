@@ -5,6 +5,4 @@ gzip -d boost.tar.gz
 tar xvf boost.tar > /dev/null
 cd boost_1_60_0/
 export CPLUS_INCLUDE_PATH="$(pwd):$CPLUS_INCLUDE_PATH"
-export CPATH=$CPLUS_INCLUDE_PATH
 echo $CPLUS_INCLUDE_PATH
-echo $CPATH
