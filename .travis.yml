@@ -18,4 +18,4 @@ addons:
     - g++-5
     - gcc-5
 
-script: ./build_and_test.sh
+script: ./scripts/build_and_test.sh
