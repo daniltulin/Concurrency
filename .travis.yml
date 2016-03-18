@@ -1,10 +1,6 @@
 language: cpp
-sudo: true
+sudo: false 
 compiler:
 - g++
-
-before_install:
-  - sudo apt-get upgrade
-  - sudo apt-get -qq update
 
 script: ./build_and_test.sh
