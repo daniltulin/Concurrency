@@ -8,3 +8,6 @@
 
 namespace utf = boost::unit_test;
 
+BOOST_AUTO_TEST_CASE(baseline) {
+    BOOST_TEST(true);
+}
