@@ -1,14 +1,10 @@
 language: cpp
-sudo: false
+sudo: true
 compiler:
 - g++
 
-addons:
-    apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - g++-4.8
-        - cmake
+before_install:
+  - sudo pat-get upgrade
+  - sudo apt-get -qq update
 
 script: ./build_and_test.sh
