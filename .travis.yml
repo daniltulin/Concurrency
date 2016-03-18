@@ -4,7 +4,7 @@ language:
 compiler:
 - gcc
 
-sudo:true
+sudo: true
 
 before_install:
 - sudo apt-get install libboost-dev
