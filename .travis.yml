@@ -7,8 +7,7 @@ compiler:
 sudo: true
 
 before_install:
-- sudo apt-get upgrade -y
-- sudo apt-get update -y
+- sudo apt-get update 
 - sudo apt-get install libboost-dev g++ -y
 
 script:
