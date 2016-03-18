@@ -2,4 +2,4 @@ mkdir -p build
 cd build
 cmake ..
 make
-make test
+make test ARGS=-V
