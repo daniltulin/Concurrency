@@ -4,7 +4,7 @@ compiler:
 - g++
 
 before_install:
-  - sudo pat-get upgrade
+  - sudo apt-get upgrade
   - sudo apt-get -qq update
 
 script: ./build_and_test.sh
