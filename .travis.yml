@@ -2,15 +2,15 @@ language:
 - cpp
 
 compiler:
-- gcc
+- clang 
 
 sudo: true
-dist: trusty
+os: osx
 
 before_install:
-- sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-- sudo apt-get update 
-- sudo apt-get install libboost-dev -y #g++-4.9 -y
+- brew update
+- brew install boost --c++11
+- export CPLUS_INCLUDE_PATH="/usr/local/include:${CPLUS_INCLUDE_PATH}"
 
 script:
 - ./scripts/build_and_test.sh
