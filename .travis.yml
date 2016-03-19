@@ -1,9 +1,11 @@
 language: cpp
+
 sudo: required
-dist: trusty
+osx: true
 
 before_install:
-- ./scripts/install_clang.sh
+#- ./scripts/install_clang.sh
+- brew update
 - ./scripts/boost.sh
 
 script:
