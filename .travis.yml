@@ -1,10 +1,9 @@
 language: cpp
 sudo: required
 dist: trusty
-compiler:
-- g++
 
 before_install:
+- ./scripts/install_clang.sh
 - ./scripts/boost.sh
 
 script:
