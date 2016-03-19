@@ -1,7 +1,7 @@
 language: cpp
 
 sudo: required
-osx: true
+os: osx
 
 before_install:
 #- ./scripts/install_clang.sh
