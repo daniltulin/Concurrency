@@ -1,0 +1,8 @@
+cmake_minimum_required (VERSION 2.8)
+project (thread_pool)
+add_executable(thread_pool test.cc)
+set_property(TARGET thread_pool PROPERTY CXX_STANDARD 14)
+include_directories(thread_safe_queue)
+add_subdirectory (thread_safe_queue) 
+include(CTest)
+add_test(thread_pool thread_pool)

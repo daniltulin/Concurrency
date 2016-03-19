@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-project(BlockingQueue)
-add_executable(BlockingQueue test.cc)
-set_property(TARGET BlockingQueue PROPERTY CXX_STANDARD 11)
-set(CMAKE_EXE_LINKER_FLAGS "-pthread")
-include(CTest)
-add_test(BlockingQueue BlockingQueue)

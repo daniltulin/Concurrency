@@ -1,8 +1,0 @@
-cmake_minimum_required (VERSION 2.8)
-project (ThreadPool)
-add_executable(ThreadPool test.cc)
-set_property(TARGET ThreadPool PROPERTY CXX_STANDARD 14)
-include_directories(BlockingQueue)
-add_subdirectory (BlockingQueue) 
-include(CTest)
-add_test(ThreadPool ThreadPool)
