@@ -10,6 +10,6 @@ cd ../..
 mkdir build 
 cd build
 cmake -G "Unix Makefiles" ../llvm
-make
+make install 
 ls
-clang -v
+CXX -v
