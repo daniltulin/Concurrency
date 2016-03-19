@@ -11,3 +11,4 @@ mkdir build
 cd build
 cmake -G "Unix Makefiles" ../llvm
 ls
+clang -v
