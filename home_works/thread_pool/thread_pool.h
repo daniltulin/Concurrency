@@ -19,9 +19,7 @@ private:
     static size_t get_def_size();
 
     std::vector<std::thread> workers;
-
     std::atomic_bool should_shutdown;
-
     thread_safe_queue<package> queue;
 
     class package {
@@ -31,5 +29,6 @@ private:
     };
 
     void launch_workers();
+    void worker_loop();
 
 };
