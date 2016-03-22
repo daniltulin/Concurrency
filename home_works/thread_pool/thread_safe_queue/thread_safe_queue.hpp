@@ -60,7 +60,7 @@ bool thread_safe_queue<T>::pop(T& item) {
     if (should_shutdown && size() == 0)
         return false;
 
-    item = std::forward<T>(internal.back());
+    item = std::move(internal.back());
     internal.pop_back();
 
     if (size() == capacity - 1)
