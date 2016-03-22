@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(thread_safe_queue)
 add_executable(thread_safe_queue test.cc)
-set_property(TARGET thread_safe_queue PROPERTY CXX_STANDARD 11)
+set_property(TARGET thread_safe_queue PROPERTY CXX_STANDARD 14)
 set(CMAKE_EXE_LINKER_FLAGS "-pthread")
 include(CTest)
 add_test(thread_safe_queue thread_safe_queue)
