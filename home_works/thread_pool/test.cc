@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include <thread>
 
 #include "thread_pool.hpp"
@@ -20,7 +21,7 @@ public:
     thread_pool<size_t> pool;
     size_t tasks_qty;
 
-    thread_pool(): tasks_qty(200000) {
+    test_fixture(): tasks_qty(200000) {
 
     }
 
@@ -34,26 +35,37 @@ public:
 
 };
 
-BOOST_FIXTURE_TEST_SUITE(test_fixture, summing_fixture)
+BOOST_FIXTURE_TEST_SUITE(testing, test_fixture)
 
 BOOST_TEST_DECORATOR(*utf::timeout(5))
-BOOST_DATA_TEST_CASE(summing_test, bdata::xrange(7)) {
-    std::vector<std::future<size_t>> futures(tasks_qty); 
+BOOST_AUTO_TEST_CASE(summing_test) {
+    std::vector<std::shared_future<size_t>> futures(tasks_qty); 
     std::vector<std::pair<size_t, size_t>> ranges;
+
     for (auto it = futures.begin(); it != futures.end(); ++it) {
         size_t begin = 1, end = 20;
         auto func = std::bind(task, begin, end);
+        BOOST_TEST_CHECKPOINT("is going to get future");
         *it = pool.submit(func);
-        ranges.pull_back({begin, end});
+        BOOST_TEST_CHECKPOINT("got one future");
+        ranges.push_back({begin, end});
     }
 
+    BOOST_TEST_CHECKPOINT("task are submitted");
+
     size_t one_thread_sum = 0, pool_sum  = 0;
-    for (auto it = futures.begin(), range = ranges.begin(); 
-         it != futures.end() && range != ranges.end(); 
-         ++it, ++range) {
+    for (auto it = futures.begin();
+         it != futures.end(); 
+         ++it) {
         pool_sum += it->get();
-        one_thread_sum += task(range->first, range->second);
     }
+
+    BOOST_TEST_CHECKPOINT("got futures");
+
+    for (auto it: ranges) {
+        one_thread_sum += task(it.first, it.second);
+    }
+
     BOOST_TEST(pool_sum == one_thread_sum);
 }
 
