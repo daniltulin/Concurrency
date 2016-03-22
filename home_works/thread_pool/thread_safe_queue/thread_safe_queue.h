@@ -12,12 +12,16 @@ public:
     thread_safe_queue(std::size_t capacity);
     thread_safe_queue(const thread_safe_queue&) = delete;
 
+    bool enqueue(const T& item);
     bool enqueue(T&& item);
-    bool pop(T&& item);
+    bool pop(T& item);
 
     inline void shutdown();
 
     inline size_t get_capacity() const;
+
+    bool pre_push_action(std::unique_lock<std::mutex>& locker);
+    void post_push_action();
 
 private:
 
