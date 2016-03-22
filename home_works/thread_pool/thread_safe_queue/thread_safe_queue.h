@@ -12,8 +12,8 @@ public:
     thread_safe_queue(std::size_t capacity);
     thread_safe_queue(const thread_safe_queue&) = delete;
 
-    bool enqueue(const T& item);
-    bool pop(T& item);
+    bool enqueue(T&& item);
+    bool pop(T&& item);
 
     inline void shutdown();
 
