@@ -1,12 +1,21 @@
 #include "thread_pool.h"
+#include <limits>
+
+namespace concurrency {
 
 template<typename T>
-thread_pool<T>::thread_pool(): workers(get_def_size()){
-    launch_workers();
+thread_pool<T>::thread_pool(): thread_pool(get_def_size()){
+
 }
 
 template<typename T>
-thread_pool<T>::thread_pool(size_t size): workers(size) {
+thread_pool<T>::~thread_pool() {
+    shutdown();
+}
+
+template<typename T>
+thread_pool<T>::thread_pool(size_t size): workers(size), 
+                                          queue(-1) {
     launch_workers();
 }
 
@@ -15,21 +24,21 @@ void thread_pool<T>::launch_workers() {
     for (auto it = workers.begin(); 
          it != workers.end();
          ++it) {
-        *it = std::thread(thread_run, this);
+        *it = std::thread(&thread_pool::thread_run, this);
     }
 }
 
 template<typename T>
-void thread_run() {
+void thread_pool<T>::thread_run() {
     while(!should_shutdown) {
         worker_loop();
     }
 }
 
 template <typename T>
-void worker_loop() {
-    std::function<T> func;
-    package worker_task;
+void thread_pool<T>::worker_loop() {
+    std::function<T()> func;
+    packaged_task<T> worker_task;
     if (!queue.pop(worker_task))
         return;
     func = worker_task.task;
@@ -38,15 +47,30 @@ void worker_loop() {
 }
 
 template<typename T>
-std::future<T> thread_pool<T>::submit(const std::function<T>& task) {
-   package worker_package(task); 
-   queue.push(worker_package);
-   return worker_task.promise.get_future();
+std::future<T> thread_pool<T>::submit(const std::function<T()>& task) {
+    packaged_task<T> worker_packaged_task(task); 
+    auto future = worker_packaged_task.promise.get_future();
+    queue.enqueue(std::move(worker_packaged_task));
+    return future;
 }
 
 template<typename T>
-thread_pool<T>::package(const std::function<T>& task): task(task) {
+packaged_task<T>::packaged_task(const std::function<T()>& task): task(task) {
 
+}
+
+template<typename T>
+packaged_task<T>::packaged_task(packaged_task<T>&& rhs): 
+                               task(std::move(rhs.task)), 
+                               promise(std::move(rhs.promise)) {
+
+}
+
+template<typename T>
+packaged_task<T>& packaged_task<T>::operator=(packaged_task<T>&& rhs) {
+    promise = std::move(rhs.promise);
+    task = std::move(rhs.task);
+    return *this;
 }
 
 template<typename T>
@@ -56,11 +80,22 @@ size_t thread_pool<T>::getSize() const {
 
 template<typename T>
 void thread_pool<T>::shutdown() {
+    if (should_shutdown)
+        return;
+    queue.shutdown();
     should_shutdown = true;
+
+    for (auto it = workers.begin();
+         it != workers.end();
+         ++it) {
+        it->join();
+    }
 }
 
 template<typename T>
 size_t thread_pool<T>::get_def_size() {
     size_t size = std::thread::hardware_concurrency();
     return size != 0 ? size : 4;
+}
+
 }
