@@ -1,5 +1,6 @@
 #include "thread_safe_queue.h"
 #include <cassert>
+#include <utility>
 
 template <typename T>
 thread_safe_queue<T>::thread_safe_queue(size_t c): capacity(c) {
@@ -7,7 +8,7 @@ thread_safe_queue<T>::thread_safe_queue(size_t c): capacity(c) {
 }
 
 template <typename T>
-bool thread_safe_queue<T>::enqueue(const T& item) {
+bool thread_safe_queue<T>::enqueue(T&& item) {
     std::unique_lock<std::mutex> locker(mutex);
 
     enq_cv.wait(locker, [this](){return size() < capacity 
@@ -16,7 +17,7 @@ bool thread_safe_queue<T>::enqueue(const T& item) {
     if (should_shutdown)
         return false;
 
-    internal.push_front(item);
+    internal.push_front(std::forward<T>(item));
     if (size() == 1)
         pop_cv.notify_one();
 
@@ -24,7 +25,7 @@ bool thread_safe_queue<T>::enqueue(const T& item) {
 }
 
 template <typename T>
-bool thread_safe_queue<T>::pop(T& item) {
+bool thread_safe_queue<T>::pop(T&& item) {
     std::unique_lock<std::mutex> locker(mutex);
 
     pop_cv.wait(locker, [this](){return size() > 0 
@@ -33,7 +34,7 @@ bool thread_safe_queue<T>::pop(T& item) {
     if (should_shutdown && size() == 0)
         return false;
 
-    item = internal.back();
+    item = std::forward<T>(internal.back());
     internal.pop_back();
 
     if (size() == capacity - 1)
