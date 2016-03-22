@@ -8,28 +8,54 @@ thread_safe_queue<T>::thread_safe_queue(size_t c): capacity(c) {
 }
 
 template <typename T>
-bool thread_safe_queue<T>::enqueue(T&& item) {
+bool thread_safe_queue<T>::enqueue(const T& item) {
     std::unique_lock<std::mutex> locker(mutex);
 
-    enq_cv.wait(locker, [this](){return size() < capacity 
-                                 || should_shutdown == true;});
-
-    if (should_shutdown)
+    if (!pre_push_action(locker))
         return false;
 
-    internal.push_front(std::forward<T>(item));
-    if (size() == 1)
-        pop_cv.notify_one();
+    internal.push_front(item);
+
+    post_push_action();
 
     return true;
 }
 
 template <typename T>
-bool thread_safe_queue<T>::pop(T&& item) {
+bool thread_safe_queue<T>::enqueue(T&& item) {
+    std::unique_lock<std::mutex> locker(mutex);
+
+    if (!pre_push_action(locker))
+        return false;
+
+    internal.push_front(std::forward<T>(item));
+
+    post_push_action();
+
+    return true;
+}
+
+template <typename T>
+bool thread_safe_queue<T>::pre_push_action(std::unique_lock<std::mutex>& locker) {
+    enq_cv.wait(locker, [this](){return size() < capacity 
+                                 || should_shutdown == true;});
+    if (should_shutdown)
+        return false;
+    return true;
+}
+
+template <typename T>
+void thread_safe_queue<T>::post_push_action() {
+    if (size() == 1)
+        pop_cv.notify_one();
+}
+
+template <typename T>
+bool thread_safe_queue<T>::pop(T& item) {
     std::unique_lock<std::mutex> locker(mutex);
 
     pop_cv.wait(locker, [this](){return size() > 0 
-                                 || should_shutdown == true;});
+            || should_shutdown == true;});
 
     if (should_shutdown && size() == 0)
         return false;
