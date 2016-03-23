@@ -55,6 +55,7 @@ BOOST_AUTO_TEST_CASE(summing_test) {
     for (auto it = futures.begin();
          it != futures.end(); 
          ++it) {
+        BOOST_TEST_CHECKPOINT("is going to get future at i=" << (it - futures.begin()));
         pool_sum += it->get();
     }
 
