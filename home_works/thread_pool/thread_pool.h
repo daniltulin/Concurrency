@@ -39,7 +39,7 @@ private:
     void launch_workers();
 
     void thread_run();
-    void worker_loop();
+    inline void worker_loop();
 
 };
 
