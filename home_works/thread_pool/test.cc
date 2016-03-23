@@ -51,8 +51,6 @@ BOOST_AUTO_TEST_CASE(summing_test) {
 
     BOOST_TEST_CHECKPOINT("task are submitted");
 
-    pool.shutdown();
-
     size_t one_thread_sum = 0, pool_sum  = 0;
     for (auto it = futures.begin();
          it != futures.end(); 
