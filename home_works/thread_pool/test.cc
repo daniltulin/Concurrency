@@ -28,7 +28,7 @@ public:
     static size_t task(size_t begin, size_t end) {
         size_t sum = 0;
         for (size_t i = begin; i < end; ++i) {
-            sum += i * i;
+            sum += i;
         }
         return sum;
     }
@@ -37,7 +37,7 @@ public:
 
 BOOST_FIXTURE_TEST_SUITE(testing, test_fixture)
 
-BOOST_TEST_DECORATOR(*utf::timeout(5))
+BOOST_TEST_DECORATOR(*utf::timeout(10))
 BOOST_AUTO_TEST_CASE(summing_test) {
     std::vector<std::shared_future<size_t>> futures(tasks_qty); 
     std::vector<std::pair<size_t, size_t>> ranges;
@@ -45,9 +45,7 @@ BOOST_AUTO_TEST_CASE(summing_test) {
     for (auto it = futures.begin(); it != futures.end(); ++it) {
         size_t begin = 1, end = 20;
         auto func = std::bind(task, begin, end);
-        BOOST_TEST_CHECKPOINT("is going to get future");
         *it = pool.submit(func);
-        BOOST_TEST_CHECKPOINT("got one future");
         ranges.push_back({begin, end});
     }
 
