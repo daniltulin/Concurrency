@@ -88,7 +88,7 @@ void thread_pool<T>::shutdown() {
     for (auto it = workers.begin();
          it != workers.end();
          ++it) {
-        it->join();
+        it->detach();
     }
 }
 
