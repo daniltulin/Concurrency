@@ -55,7 +55,7 @@ bool thread_safe_queue<T>::pop(T& item) {
     std::unique_lock<std::mutex> locker(mutex);
 
     pop_cv.wait(locker, [this](){return size() > 0 
-            || should_shutdown == true;});
+                                 || should_shutdown == true;});
 
     if (should_shutdown && size() == 0)
         return false;
