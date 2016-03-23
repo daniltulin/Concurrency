@@ -21,7 +21,7 @@ public:
     thread_pool<size_t> pool;
     size_t tasks_qty;
 
-    test_fixture(): tasks_qty(100000) {
+    test_fixture(): tasks_qty(10000) {
 
     }
 
