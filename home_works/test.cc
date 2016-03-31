@@ -1,7 +1,7 @@
 #include <iostream>
 #include <future>
 
-#define BOOST_TEST_MODULE thread pool tests
+#define BOOST_TEST_MODULE library tests
 #include <boost/test/included/unit_test.hpp>
 
 namespace utf = boost::unit_test;
