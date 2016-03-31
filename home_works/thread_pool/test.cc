@@ -11,14 +11,14 @@ namespace utf = boost::unit_test;
 
 BOOST_AUTO_TEST_CASE(baseline) {
     thread_pool<int> pool;
-    BOOST_TEST(pool.getSize() > 0);
+    BOOST_TEST_REQUIRE(pool.getSize() > 0);
 
     int value = 5;
     auto future = pool.submit([=](){
         return value;
     });
     BOOST_TEST_CHECKPOINT("is going to wait for future");
-    BOOST_TEST(future.get() == value);
+    BOOST_TEST_REQUIRE(future.get() == value);
 }
 
 class test_fixture {
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(summing_test) {
         one_thread_sum += task(it.first, it.second);
     }
 
-    BOOST_TEST(pool_sum == one_thread_sum);
+    BOOST_TEST_REQUIRE(pool_sum == one_thread_sum);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
