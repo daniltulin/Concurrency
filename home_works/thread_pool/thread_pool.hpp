@@ -15,7 +15,8 @@ thread_pool<T>::~thread_pool() {
 
 template<typename T>
 thread_pool<T>::thread_pool(size_t size): workers(size), 
-                                          queue(-1) {
+                                          queue(-1),
+                                          should_shutdown(false) {
     launch_workers();
 }
 
