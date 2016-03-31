@@ -43,8 +43,9 @@ public:
 
 };
 
-BOOST_FIXTURE_TEST_SUITE(testing, test_fixture, *utf::timeout(10))
+BOOST_FIXTURE_TEST_SUITE(testing, test_fixture)
 
+BOOST_TEST_DECORATOR(*utf::timeout(10))
 BOOST_AUTO_TEST_CASE(summing_test) {
     std::vector<std::shared_future<size_t>> futures(tasks_qty); 
     std::vector<std::pair<size_t, size_t>> ranges;
