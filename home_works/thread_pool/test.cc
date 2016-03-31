@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(summing_test) {
     std::vector<std::pair<size_t, size_t>> ranges;
 
     for (auto it = futures.begin(); it != futures.end(); ++it) {
-        size_t begin = 1, end = 2;
+        size_t begin = 1, end = 20;
         auto func = std::bind(task, begin, end);
         *it = pool.submit(func);
         ranges.push_back({begin, end});

@@ -37,12 +37,10 @@ void thread_pool<T>::thread_run() {
 
 template <typename T>
 void thread_pool<T>::worker_loop() {
-    std::function<T()> func;
     packaged_task<T> worker_task;
     if (!queue.pop(worker_task)) 
         return;
-    func = worker_task.task;
-    auto value = func();
+    auto value = worker_task.task();
     worker_task.promise.set_value(value);
 }
 
