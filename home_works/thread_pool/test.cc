@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_CASE(baseline) {
     auto future = pool.submit([=](){
         return value;
     });
-    BOOST_CHECKPOINT("is going to wait for future");
+    BOOST_TEST_CHECKPOINT("is going to wait for future");
     BOOST_TEST(future.get() == value);
 }
 
