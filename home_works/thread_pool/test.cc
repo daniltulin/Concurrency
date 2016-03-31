@@ -9,9 +9,17 @@
 
 namespace utf = boost::unit_test;
 
+BOOST_TEST_DECORATOR(*utf::timeout(10))
 BOOST_AUTO_TEST_CASE(baseline) {
     thread_pool<int> pool;
-    BOOST_TEST(pool.getSize() > 0);
+    BOOST_TEST_REQUIRE(pool.getSize() > 0);
+
+    int value = 5;
+    auto future = pool.submit([=](){
+        return value;
+    });
+    BOOST_TEST_CHECKPOINT("is going to wait for future");
+    BOOST_TEST_REQUIRE(future.get() == value);
 }
 
 class test_fixture {
@@ -43,7 +51,7 @@ BOOST_AUTO_TEST_CASE(summing_test) {
     std::vector<std::pair<size_t, size_t>> ranges;
 
     for (auto it = futures.begin(); it != futures.end(); ++it) {
-        size_t begin = 1, end = 2;
+        size_t begin = 1, end = 20;
         auto func = std::bind(task, begin, end);
         *it = pool.submit(func);
         ranges.push_back({begin, end});
@@ -65,7 +73,7 @@ BOOST_AUTO_TEST_CASE(summing_test) {
         one_thread_sum += task(it.first, it.second);
     }
 
-    BOOST_TEST(pool_sum == one_thread_sum);
+    BOOST_TEST_REQUIRE(pool_sum == one_thread_sum);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

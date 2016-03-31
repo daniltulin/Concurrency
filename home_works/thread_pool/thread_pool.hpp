@@ -4,7 +4,7 @@
 namespace concurrency {
 
 template<typename T>
-thread_pool<T>::thread_pool(): thread_pool(get_def_size()){
+thread_pool<T>::thread_pool(): thread_pool(get_def_size()) {
 
 }
 
@@ -15,7 +15,8 @@ thread_pool<T>::~thread_pool() {
 
 template<typename T>
 thread_pool<T>::thread_pool(size_t size): workers(size), 
-                                          queue(-1) {
+                                          queue(-1),
+                                          should_shutdown(false) {
     launch_workers();
 }
 
@@ -37,12 +38,10 @@ void thread_pool<T>::thread_run() {
 
 template <typename T>
 void thread_pool<T>::worker_loop() {
-    std::function<T()> func;
     packaged_task<T> worker_task;
-    if (!queue.pop(worker_task))
+    if (!queue.pop(worker_task)) 
         return;
-    func = worker_task.task;
-    auto value = func();
+    auto value = worker_task.task();
     worker_task.promise.set_value(value);
 }
 
@@ -88,7 +87,7 @@ void thread_pool<T>::shutdown() {
     for (auto it = workers.begin();
          it != workers.end();
          ++it) {
-        it->detach();
+        it->join();
     }
 }
 

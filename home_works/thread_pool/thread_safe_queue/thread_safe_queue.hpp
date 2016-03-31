@@ -3,7 +3,8 @@
 #include <utility>
 
 template <typename T>
-thread_safe_queue<T>::thread_safe_queue(size_t c): capacity(c) {
+thread_safe_queue<T>::thread_safe_queue(size_t c): capacity(c), 
+                                                   should_shutdown(false) {
 
 }
 

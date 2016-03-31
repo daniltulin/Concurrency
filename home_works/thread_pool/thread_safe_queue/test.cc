@@ -24,29 +24,29 @@ BOOST_FIXTURE_TEST_SUITE(baseline_tests, baseline_fixture)
 
 BOOST_AUTO_TEST_CASE(baseline_test) {
     size_t value = 7;
-    BOOST_TEST(queue.enqueue(value));
+    BOOST_TEST_REQUIRE(queue.enqueue(value));
     size_t popped;
-    BOOST_TEST(queue.pop(popped));
-    BOOST_TEST(popped == value); 
+    BOOST_TEST_REQUIRE(queue.pop(popped));
+    BOOST_TEST_REQUIRE(popped == value); 
 
     queue.enqueue(value);
     queue.shutdown();
-    BOOST_TEST(queue.enqueue(value) == false);
-    BOOST_TEST(queue.pop(popped) == true);
-    BOOST_TEST(popped == value);
-    BOOST_TEST(queue.pop(popped) == false);
+    BOOST_TEST_REQUIRE(queue.enqueue(value) == false);
+    BOOST_TEST_REQUIRE(queue.pop(popped) == true);
+    BOOST_TEST_REQUIRE(popped == value);
+    BOOST_TEST_REQUIRE(queue.pop(popped) == false);
 }
 
 BOOST_AUTO_TEST_CASE(one_thread_deque_test) {
     for (size_t i = 0; i < queue.get_capacity(); ++i) {
-        BOOST_TEST(queue.enqueue(i));
+        BOOST_TEST_REQUIRE(queue.enqueue(i));
     }
 
     size_t popped;
     for (size_t i = 0; i < queue.get_capacity(); ++i) {
         popped = 0;
-        BOOST_TEST(queue.pop(popped));
-        BOOST_TEST(popped == i);
+        BOOST_TEST_REQUIRE(queue.pop(popped));
+        BOOST_TEST_REQUIRE(popped == i);
     }
 }
 
@@ -104,13 +104,13 @@ BOOST_AUTO_TEST_CASE(summing_test, *utf::timeout(5)) {
 
     queue.shutdown();
     BOOST_TEST_CHECKPOINT("queue is shutdown");
-    BOOST_TEST(queue.enqueue(5) == false);
+    BOOST_TEST_REQUIRE(queue.enqueue(5) == false);
 
     size_t futures_sum = 0;
     for (auto it = futures.begin(); it != futures.end(); ++it) {
         futures_sum += it->get();
     }
-    BOOST_TEST(futures_sum == sum);
+    BOOST_TEST_REQUIRE(futures_sum == sum);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -164,16 +164,16 @@ std::ostream& operator<<(std::ostream& os, const move_fixture::int_wrapper& wrap
 
 BOOST_FIXTURE_TEST_CASE(move_test, move_fixture) {
     int_wrapper value = 7;
-    BOOST_TEST(queue.enqueue(std::move(value)));
+    BOOST_TEST_REQUIRE(queue.enqueue(std::move(value)));
     int_wrapper popped;
-    BOOST_TEST(queue.pop(popped));
-    BOOST_TEST(popped == value); 
+    BOOST_TEST_REQUIRE(queue.pop(popped));
+    BOOST_TEST_REQUIRE(popped == value); 
 
     queue.enqueue(std::move(value));
     queue.shutdown();
-    BOOST_TEST(queue.enqueue(std::move(value)) == false);
-    BOOST_TEST(queue.pop(popped) == true);
-    BOOST_TEST(popped == value);
-    BOOST_TEST(queue.pop(popped) == false);
+    BOOST_TEST_REQUIRE(queue.enqueue(std::move(value)) == false);
+    BOOST_TEST_REQUIRE(queue.pop(popped) == true);
+    BOOST_TEST_REQUIRE(popped == value);
+    BOOST_TEST_REQUIRE(queue.pop(popped) == false);
 }
 
