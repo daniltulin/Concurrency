@@ -57,10 +57,10 @@ BOOST_AUTO_TEST_CASE(three_workers_test) {
 
 BOOST_TEST_DECORATOR(*utf::timeout(4))
 BOOST_AUTO_TEST_CASE(increment_case) {
-    std::vector<std::thread> futures(500);
+    std::vector<std::thread> threads(500);
     cyclic_barrier barrier(4);
 
-    for (auto &it: futures) {
+    for (auto &it: threads) {
         it = std::thread([&](){
             barrier.enter();
             value++;
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(increment_case) {
     }
 
     BOOST_TEST_CHECKPOINT("is going to get futures");
-    for (auto &it: futures) {
+    for (auto &it: threads) {
         it.join();
     }
 
