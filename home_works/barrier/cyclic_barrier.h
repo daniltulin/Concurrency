@@ -6,6 +6,8 @@ class cyclic_barrier {
 public:
 
     cyclic_barrier(size_t size);
+    cyclic_barrier(const cyclic_barrier&) = delete;
+
     void enter();
 
 private:
@@ -17,7 +19,7 @@ private:
 
     size_t era;
 
-    std::mutex mutex;
+    mutex_type mutex;
     std::condition_variable cv;
 
 };
