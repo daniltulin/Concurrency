@@ -5,7 +5,7 @@ class cyclic_barrier {
 
 public:
 
-    cyclic_barrier(size_t size);
+    explicit cyclic_barrier(size_t size);
     cyclic_barrier(const cyclic_barrier&) = delete;
 
     void enter();
