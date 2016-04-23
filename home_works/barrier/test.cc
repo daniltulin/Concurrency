@@ -39,11 +39,11 @@ BOOST_TEST_DECORATOR(*utf::timeout(1))
 BOOST_AUTO_TEST_CASE(three_workers_test) {
     cyclic_barrier barrier(3);
 
-    auto first = std::thread([&]() {
+    auto first = std::thread([&] {
         barrier.enter();
     });
 
-    auto second = std::thread([&]() {
+    auto second = std::thread([&] {
         barrier.enter();
     });
 
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(increment_case) {
     cyclic_barrier barrier(4);
 
     for (auto &it: threads) {
-        it = std::thread([&](){
+        it = std::thread([&] {
             barrier.enter();
             value++;
         });
