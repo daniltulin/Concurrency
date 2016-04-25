@@ -1,4 +1,5 @@
 #include <future>
+#include <vector>
 #include "thread_safe_queue.hpp"
 
 namespace concurrency {

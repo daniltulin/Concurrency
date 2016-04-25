@@ -1,0 +1,3 @@
+{
+  "cmd": "./scripts/build_and_test.sh"
+}
