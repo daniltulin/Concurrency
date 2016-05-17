@@ -22,13 +22,11 @@ class test_fixture {
 public:
 
     test_fixture(): workers_num(500),
-                    value(0),
-                    pool(4) {
+                    value(0) {
 
     }
 
     size_t workers_num;
-    thread_pool<int> pool;
 
     std::atomic_int value;
 };
@@ -73,7 +71,6 @@ BOOST_AUTO_TEST_CASE(increment_case) {
     }
 
     BOOST_TEST_CHECKPOINT("is going to shutdown");
-    pool.shutdown();
     BOOST_TEST_REQUIRE(value == 500);
 }
 BOOST_AUTO_TEST_SUITE_END()
@@ -93,8 +90,5 @@ public:
 
 BOOST_FIXTURE_TEST_SUITE(queue_testing, queue_fixture_test)
 
-BOOST_TEST_DECORATOR(*utf::timeout(4)) {
-    
-}
 
 BOOST_AUTO_TEST_SUITE_END()
