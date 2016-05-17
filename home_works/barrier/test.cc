@@ -1,6 +1,6 @@
 #include <iostream>
 #include <future>
-#include <thread_pool.hpp>
+#include <thread_safe_queue.hpp>
 #include <atomic>
 #include "cyclic_barrier.hpp"
 
@@ -76,4 +76,25 @@ BOOST_AUTO_TEST_CASE(increment_case) {
     pool.shutdown();
     BOOST_TEST_REQUIRE(value == 500);
 }
+BOOST_AUTO_TEST_SUITE_END()
+
+class queue_fixture_test {
+
+public:
+
+    queue_fixture_test(): queue(-1), barrier(4) {
+
+    }
+
+    thread_safe_queue<int> queue;
+    cyclic_barrier barrier;
+
+};
+
+BOOST_FIXTURE_TEST_SUITE(queue_testing, queue_fixture_test)
+
+BOOST_TEST_DECORATOR(*utf::timeout(4)) {
+    
+}
+
 BOOST_AUTO_TEST_SUITE_END()
