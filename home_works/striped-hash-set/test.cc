@@ -2,7 +2,7 @@
 #include <vector>
 #include <thread>
 
-#include "striped-hash-set.hpp"
+#include "striped_hash_set.hpp"
 
 #define BOOST_TEST_MODULE thread pool tests
 #include <boost/test/included/unit_test.hpp>
