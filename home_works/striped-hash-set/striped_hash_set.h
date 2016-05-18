@@ -29,8 +29,8 @@ public:
 
 private:
 
-    size_t get_bucket_index(size_t hash_value) const;
-    size_t get_stripe_index(size_t hash_value) const;
+    inline size_t get_bucket_index(size_t hash_value) const;
+    inline size_t get_stripe_index(size_t hash_value) const;
 
     const size_t growthFactor;
     const double loadFactor;
