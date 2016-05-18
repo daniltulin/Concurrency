@@ -19,7 +19,7 @@ public:
     : growthFactor(growthFactor_),
     loadFactor(loadFactor_),
     locks(mutexNum_),
-    elementsNum(0),
+    size(0),
     table(67 * mutexNum_)
     {}
 
@@ -37,6 +37,6 @@ private:
 
     mutable std::vector<std::mutex> locks;
 
-    std::atomic<size_t> elementsNum;
+    std::atomic<size_t> size;
     std::vector<std::forward_list<T>> table;
 };
