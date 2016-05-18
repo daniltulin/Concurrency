@@ -5,7 +5,7 @@
 #include <atomic>
 #include <algorithm>
 
-template<class T, class Hash = std::hash<T> >
+template<class T, class Hash = std::hash<T>>
 class striped_hash_set {
 
     typedef std::forward_list<T>& listref;
@@ -15,7 +15,7 @@ public:
 
     striped_hash_set (size_t mutexNum_ = 1,
                       size_t growthFactor_ = 2,
-                      double loadFactor_ = 100.)
+                      double loadFactor_ = 100.0f)
     : growthFactor(growthFactor_),
     loadFactor(loadFactor_),
     locks(mutexNum_),
@@ -38,5 +38,5 @@ private:
     mutable std::vector<std::mutex> locks;
 
     std::atomic<size_t> elementsNum;
-    std::vector<std::forward_list<T> > table;
+    std::vector<std::forward_list<T>> table;
 };
