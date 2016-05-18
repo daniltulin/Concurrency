@@ -25,15 +25,17 @@ void striped_hash_set<T, Hash>::add(const T& elem) {
         for(auto& mutex: locks)
             ulocks.emplace_back(mutex);
 
-        if(old_size == table.size()) {
+        bool does_not_changed = (old_size == table.size());
+
+        if(does_not_changed) {
             auto oldTable = table;
             size_t size = growthFactor * table.size();
 
             table.clear();
             table.resize(size);
 
-            for(const auto& buck : oldTable)
-                for(const auto& elm : buck)
+            for(const auto& buck: oldTable)
+                for(const auto& elm: buck)
                     table[Hash()(elm) % size].push_front(elm);
         }
     }
