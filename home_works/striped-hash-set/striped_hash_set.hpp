@@ -1,16 +1,16 @@
 #include "striped_hash_set.h"
 
 template<class T, class Hash>
-void striped_hash_set<T, Hash>::add(const T& elem) {
+void striped_hash_set<T, Hash>::add(const T& key) {
 
-    size_t hash_value = Hash()(elem);
+    size_t hash_value = Hash()(key);
     std::unique_lock<std::mutex> ul(locks[get_stripe_index(hash_value)]);
     listref bucket = table[get_bucket_index(hash_value)];
 
-    if(std::find(bucket.begin(), bucket.end(), elem) != bucket.end())
+    if(std::find(bucket.begin(), bucket.end(), key) != bucket.end())
         return;
 
-    bucket.push_front(elem);
+    bucket.push_front(key);
     size++;
 
     double factor = static_cast<double>(size) / table.size();
@@ -42,25 +42,25 @@ void striped_hash_set<T, Hash>::add(const T& elem) {
 }
 
 template<class T, class Hash>
-void striped_hash_set<T, Hash>::remove(const T& elem) {
+void striped_hash_set<T, Hash>::remove(const T& key) {
 
-    size_t hash_value = Hash()(elem);
+    size_t hash_value = Hash()(key);
     std::unique_lock<std::mutex> ul(locks[get_stripe_index(hash_value)]);
 
     listref bucket = table[get_bucket_index(hash_value)];
-    bucket.remove(elem);
+    bucket.remove(key);
 
     size--;
 }
 
 template<class T, class Hash>
-bool striped_hash_set<T, Hash>::contains(const T& elem) const {
-    size_t hash_value = Hash()(elem);
+bool striped_hash_set<T, Hash>::contains(const T& key) const {
+    size_t hash_value = Hash()(key);
     std::unique_lock<std::mutex> ul(locks[get_stripe_index(hash_value)]);
 
     clistref bucket = table[get_bucket_index(hash_value)];
 
-    return std::find(bucket.begin(), bucket.end(), elem) != bucket.end();
+    return std::find(bucket.begin(), bucket.end(), key) != bucket.end();
 }
 
 template<class T, class Hash>

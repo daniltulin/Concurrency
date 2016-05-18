@@ -23,9 +23,9 @@ public:
     table(67 * mutexNum_)
     {}
 
-    void add(const T& elem);
-    void remove(const T& elem);
-    bool contains(const T& elem) const;
+    void add(const T& key);
+    void remove(const T& key);
+    bool contains(const T& key) const;
 
 private:
 
