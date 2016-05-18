@@ -8,19 +8,19 @@
 template<class T, class Hash = std::hash<T>>
 class striped_hash_set {
 
-    typedef std::forward_list<T>& listref;
-    typedef const std::forward_list<T>& clistref;
+    typedef std::forward_list<T>& list_reference;
+    typedef const std::forward_list<T>& const_list_reference;
 
 public:
 
-    striped_hash_set (size_t mutexNum_ = 1,
-                      size_t growthFactor_ = 2,
-                      double loadFactor_ = 100.0f)
-    : growthFactor(growthFactor_),
-    loadFactor(loadFactor_),
-    mutexes(mutexNum_),
+    striped_hash_set (size_t mutexes_qty = 1,
+                      size_t growth_factor = 2,
+                      double load_factor = 100.0f)
+    : growth_factor(growth_factor),
+    load_factor(load_factor),
+    mutexes(mutexes_qty),
     size(0),
-    table(67 * mutexNum_)
+    table(91 * mutexes_qty)
     {}
 
     void add(const T& key);
@@ -32,8 +32,8 @@ private:
     inline size_t get_bucket_index(size_t hash_value) const;
     inline size_t get_stripe_index(size_t hash_value) const;
 
-    const size_t growthFactor;
-    const double loadFactor;
+    const size_t growth_factor;
+    const double load_factor;
 
     mutable std::vector<std::mutex> mutexes;
 

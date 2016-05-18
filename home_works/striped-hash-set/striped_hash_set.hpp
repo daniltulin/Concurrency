@@ -5,7 +5,7 @@ void striped_hash_set<T, Hash>::add(const T& key) {
 
     size_t hash_value = Hash()(key);
     std::unique_lock<std::mutex> ul(mutexes[get_stripe_index(hash_value)]);
-    listref bucket = table[get_bucket_index(hash_value)];
+    list_reference bucket = table[get_bucket_index(hash_value)];
 
     if(std::find(bucket.begin(), bucket.end(), key) != bucket.end())
         return;
@@ -14,7 +14,7 @@ void striped_hash_set<T, Hash>::add(const T& key) {
     size++;
 
     double factor = static_cast<double>(size) / table.size();
-    bool is_overload = (factor >= loadFactor); 
+    bool is_overload = (factor >= load_factor); 
 
     if (is_overload) {
         size_t old_size = table.size();
@@ -29,7 +29,7 @@ void striped_hash_set<T, Hash>::add(const T& key) {
 
         if(does_not_changed) {
             auto oldTable = table;
-            size_t size = growthFactor * table.size();
+            size_t size = growth_factor * table.size();
 
             table.clear();
             table.resize(size);
@@ -47,7 +47,7 @@ void striped_hash_set<T, Hash>::remove(const T& key) {
     size_t hash_value = Hash()(key);
     std::unique_lock<std::mutex> ul(mutexes[get_stripe_index(hash_value)]);
 
-    listref bucket = table[get_bucket_index(hash_value)];
+    list_reference bucket = table[get_bucket_index(hash_value)];
     bucket.remove(key);
 
     size--;
@@ -58,7 +58,7 @@ bool striped_hash_set<T, Hash>::contains(const T& key) const {
     size_t hash_value = Hash()(key);
     std::unique_lock<std::mutex> ul(mutexes[get_stripe_index(hash_value)]);
 
-    clistref bucket = table[get_bucket_index(hash_value)];
+    const_list_reference bucket = table[get_bucket_index(hash_value)];
 
     return std::find(bucket.begin(), bucket.end(), key) != bucket.end();
 }
