@@ -4,7 +4,7 @@ template<class T, class Hash>
 void striped_hash_set<T, Hash>::add(const T& key) {
 
     size_t hash_value = Hash()(key);
-    std::unique_lock<std::mutex> ul(locks[get_stripe_index(hash_value)]);
+    std::unique_lock<std::mutex> ul(mutexes[get_stripe_index(hash_value)]);
     listref bucket = table[get_bucket_index(hash_value)];
 
     if(std::find(bucket.begin(), bucket.end(), key) != bucket.end())
@@ -22,7 +22,7 @@ void striped_hash_set<T, Hash>::add(const T& key) {
 
         std::vector<std::unique_lock<std::mutex>> ulocks;
 
-        for(auto& mutex: locks)
+        for(auto& mutex: mutexes)
             ulocks.emplace_back(mutex);
 
         bool does_not_changed = (old_size == table.size());
@@ -45,7 +45,7 @@ template<class T, class Hash>
 void striped_hash_set<T, Hash>::remove(const T& key) {
 
     size_t hash_value = Hash()(key);
-    std::unique_lock<std::mutex> ul(locks[get_stripe_index(hash_value)]);
+    std::unique_lock<std::mutex> ul(mutexes[get_stripe_index(hash_value)]);
 
     listref bucket = table[get_bucket_index(hash_value)];
     bucket.remove(key);
@@ -56,7 +56,7 @@ void striped_hash_set<T, Hash>::remove(const T& key) {
 template<class T, class Hash>
 bool striped_hash_set<T, Hash>::contains(const T& key) const {
     size_t hash_value = Hash()(key);
-    std::unique_lock<std::mutex> ul(locks[get_stripe_index(hash_value)]);
+    std::unique_lock<std::mutex> ul(mutexes[get_stripe_index(hash_value)]);
 
     clistref bucket = table[get_bucket_index(hash_value)];
 
@@ -70,5 +70,5 @@ size_t striped_hash_set<T, Hash>::get_bucket_index(size_t hash_value) const {
 
 template<class T, class Hash>
 size_t striped_hash_set<T, Hash>::get_stripe_index(size_t hash_value) const {
-    return hash_value % locks.size();
+    return hash_value % mutexes.size();
 }
