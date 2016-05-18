@@ -2,21 +2,27 @@
 
 template<class T, class Hash>
 void striped_hash_set<T, Hash>::add(const T& elem) {
+
     size_t hash_value = Hash()(elem);
     std::unique_lock<std::mutex> ul(locks[get_stripe_index(hash_value)]);
     listref bucket = table[get_bucket_index(hash_value)];
+
     if(std::find(bucket.begin(), bucket.end(), elem) != bucket.end())
         return;
+
     bucket.push_front(elem);
-    if (static_cast<double>(elementsNum.fetch_add(1)) / table.size() >= loadFactor)
-    {
+    elementsNum++;
+
+    double factor = static_cast<double>(elementsNum) / table.size();
+    bool is_overload = (factor > = loadFactor); 
+
+    if (is_overload) {
         size_t oldSize = table.size();
         ul.unlock();
-        std::vector<std::unique_lock<std::mutex> > ulocks;
-        ulocks.emplace_back(locks[0]);
-        if(oldSize == table.size())
-        {
-            for(size_t i = 1; i < locks.size(); ++i)
+
+        std::vector<std::unique_lock<std::mutex>> ulocks;
+        if(oldSize == table.size()) {
+            for(size_t i = 0; i < locks.size(); ++i)
                 ulocks.emplace_back(locks[i]);
             auto oldTable = table;
             size_t size = growthFactor * table.size();
