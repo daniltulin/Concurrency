@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 project (striped-hash-set)
 add_executable(striped-hash-set test.cc)
-set_property(TARGET barrier PROPERTY CXX_STANDARD 14)
+set_property(TARGET striped-hash-set PROPERTY CXX_STANDARD 14)
 set(CMAKE_EXE_LINKER_FLAGS "-pthread")
 include(CTest)
 add_test(striped-hash-set striped-hash-set)
