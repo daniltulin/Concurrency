@@ -1,7 +1,7 @@
 #include "cyclic_barrier.h"
 
-cyclic_barrier::cyclic_barrier(size_t size): size(size),
-                                             era(0),
+cyclic_barrier::cyclic_barrier(size_t size): era(0), 
+                                             size(size),
                                              threads_num(0) {
 
 }
