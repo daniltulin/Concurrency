@@ -14,10 +14,10 @@ private:
 
     typedef std::mutex mutex_type;
 
+    size_t era;
+
     size_t size;
     size_t threads_num;
-
-    size_t era;
 
     mutex_type mutex;
     std::condition_variable cv;
