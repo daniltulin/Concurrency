@@ -34,13 +34,12 @@ void striped_hash_set<T, Hash>::grow_up(size_t old_size) {
     bool does_not_changed = (old_size == table.size());
 
     if(does_not_changed) {
-        auto oldTable = table;
-        size_t size = growth_factor * table.size();
+        auto old_table = std::move(table);
+        size_t size = growth_factor * old_size;
 
-        table.clear();
-        table.resize(size);
+        table = std::forward_list<T>(size);
 
-        for(const auto& buck: oldTable)
+        for(const auto& buck: old_table)
             for(const auto& elm: buck)
                 table[Hash()(elm) % size].push_front(elm);
     }
