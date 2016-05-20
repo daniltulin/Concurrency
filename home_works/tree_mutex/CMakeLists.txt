@@ -1,0 +1,7 @@
+cmake_minimum_required (VERSION 2.8)
+project(peterson)
+add_executable(peterson test.cc)
+set_property(TARGET peterson PROPERTY CXX_STANDARD 14)
+set(CMAKE_EXE_LINKER_FLAGS "-pthread")
+include(CTest)
+add_test(peterson peterson)
