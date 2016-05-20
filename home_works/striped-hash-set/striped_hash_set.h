@@ -37,6 +37,8 @@ private:
 
     mutable std::vector<std::mutex> mutexes;
 
+    void grow_up(size_t old_size);
+
     std::atomic<size_t> size;
     std::vector<std::forward_list<T>> table;
 };

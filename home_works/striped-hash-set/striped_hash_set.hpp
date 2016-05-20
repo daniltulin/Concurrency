@@ -20,24 +20,29 @@ void striped_hash_set<T, Hash>::add(const T& key) {
         size_t old_size = table.size();
         ul.unlock();
 
+        grow_up(old_size);
+    }
+}
+
+template<class T, class Hash>
+void striped_hash_set<T, Hash>::grow_up(size_t old_size) {
         std::vector<std::unique_lock<std::mutex>> ulocks;
 
-        for(auto& mutex: mutexes)
-            ulocks.emplace_back(mutex);
+    for(auto& mutex: mutexes)
+        ulocks.emplace_back(mutex);
 
-        bool does_not_changed = (old_size == table.size());
+    bool does_not_changed = (old_size == table.size());
 
-        if(does_not_changed) {
-            auto oldTable = table;
-            size_t size = growth_factor * table.size();
+    if(does_not_changed) {
+        auto oldTable = table;
+        size_t size = growth_factor * table.size();
 
-            table.clear();
-            table.resize(size);
+        table.clear();
+        table.resize(size);
 
-            for(const auto& buck: oldTable)
-                for(const auto& elm: buck)
-                    table[Hash()(elm) % size].push_front(elm);
-        }
+        for(const auto& buck: oldTable)
+            for(const auto& elm: buck)
+                table[Hash()(elm) % size].push_front(elm);
     }
 }
 
