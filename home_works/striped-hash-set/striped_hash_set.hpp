@@ -4,7 +4,7 @@ template<class T, class Hash>
 void striped_hash_set<T, Hash>::add(const T& key) {
 
     size_t hash_value = Hash()(key);
-    std::unique_lock<std::mutex> ul(mutexes[get_stripe_index(hash_value)]);
+    std::unique_lock<std::mutex> lock(mutexes[get_stripe_index(hash_value)]);
     list_reference bucket = table[get_bucket_index(hash_value)];
 
     if(std::find(bucket.begin(), bucket.end(), key) != bucket.end())
@@ -18,7 +18,7 @@ void striped_hash_set<T, Hash>::add(const T& key) {
 
     if (is_overload) {
         size_t old_size = table.size();
-        ul.unlock();
+        lock.unlock();
 
         grow_up(old_size);
     }
@@ -26,7 +26,7 @@ void striped_hash_set<T, Hash>::add(const T& key) {
 
 template<class T, class Hash>
 void striped_hash_set<T, Hash>::grow_up(size_t old_size) {
-        std::vector<std::unique_lock<std::mutex>> ulocks;
+    std::vector<std::unique_lock<std::mutex>> ulocks;
 
     for(auto& mutex: mutexes)
         ulocks.emplace_back(mutex);
@@ -50,7 +50,7 @@ template<class T, class Hash>
 void striped_hash_set<T, Hash>::remove(const T& key) {
 
     size_t hash_value = Hash()(key);
-    std::unique_lock<std::mutex> ul(mutexes[get_stripe_index(hash_value)]);
+    std::unique_lock<std::mutex> lock(mutexes[get_stripe_index(hash_value)]);
 
     list_reference bucket = table[get_bucket_index(hash_value)];
     bucket.remove(key);
@@ -61,7 +61,7 @@ void striped_hash_set<T, Hash>::remove(const T& key) {
 template<class T, class Hash>
 bool striped_hash_set<T, Hash>::contains(const T& key) const {
     size_t hash_value = Hash()(key);
-    std::unique_lock<std::mutex> ul(mutexes[get_stripe_index(hash_value)]);
+    std::unique_lock<std::mutex> lock(mutexes[get_stripe_index(hash_value)]);
 
     const_list_reference bucket = table[get_bucket_index(hash_value)];
 
